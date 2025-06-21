@@ -1,64 +1,122 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.stage.advancia</groupId>
   <artifactId>ANGULAR_SPRING_ORACLE</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-    <packaging>war</packaging>
+  <packaging>war</packaging>
+
   <parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>3.4.3</version>
+  </parent>
+
+  <properties>
+    <java.version>17</java.version>
+    <maven.compiler.source>${java.version}</maven.compiler.source>
+    <maven.compiler.target>${java.version}</maven.compiler.target>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <jakarta-servlet.version>5.0.0</jakarta-servlet.version>
+  </properties>
+
+  <dependencies>
+    <!-- Spring Boot Starter con esclusione Tomcat embedded -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-starter-tomcat</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <!-- Tomcat provided (per deploy su Tomcat 9) -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-tomcat</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- Dipendenze Jakarta EE per compatibilità con Tomcat 9 -->
+    <dependency>
+      <groupId>jakarta.servlet</groupId>
+      <artifactId>jakarta.servlet-api</artifactId>
+      <version>${jakarta-servlet.version}</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- Altre tue dipendenze -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-data-jpa</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.oracle.database.jdbc</groupId>
+      <artifactId>ojdbc8</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-security</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-data-redis</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.data</groupId>
+      <artifactId>spring-data-redis</artifactId>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <finalName>myapp</finalName>
+    
+    <plugins>
+      <!-- Spring Boot Maven Plugin -->
+      <plugin>
         <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.4.3</version>
-    </parent> 
- 
-    <dependencies>
-        <dependency>
-		    <groupId>org.springframework.boot</groupId>
-		    <artifactId>spring-boot-starter-web</artifactId>
-		    <exclusions>
-		        <exclusion>
-		            <groupId>org.springframework.boot</groupId>
-		            <artifactId>spring-boot-starter-tomcat</artifactId>
-		        </exclusion>
-		    </exclusions>
-		</dependency>
-        <dependency>
-	        <groupId>org.springframework.boot</groupId>
-	        <artifactId>spring-boot-starter-tomcat</artifactId>
-	        <scope>provided</scope>
-	    </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/com.oracle.database.jdbc/ojdbc8 -->
-		<dependency>
-		    <groupId>com.oracle.database.jdbc</groupId>
-		    <artifactId>ojdbc8</artifactId>
-		    </dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-security</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-redis</artifactId>
-		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.springframework.data/spring-data-redis -->
-		<dependency>
-		    <groupId>org.springframework.data</groupId>
-		    <artifactId>spring-data-redis</artifactId>
-		    </dependency>
-    </dependencies>
-     
-    <build>
-	    <plugins>
-	        <plugin>
-	            <groupId>org.springframework.boot</groupId>
-	            <artifactId>spring-boot-maven-plugin</artifactId>
-	            <configuration>
-	                <skip>true</skip>
-	            </configuration>
-	        </plugin>
-	    </plugins>
-	</build>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+      </plugin>
+
+      <!-- Maven War Plugin con Jakarta EE Transformer -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-war-plugin</artifactId>
+        <version>3.4.0</version>
+        <configuration>
+          <failOnMissingWebXml>false</failOnMissingWebXml>
+          <archive>
+            <manifest>
+              <addClasspath>true</addClasspath>
+            </manifest>
+          </archive>
+          <transformers>
+            <transformer implementation="org.apache.maven.plugins.war.transform.JakartaTransformer">
+              <verbose>true</verbose>
+            </transformer>
+          </transformers>
+        </configuration>
+      </plugin>
+
+      <!-- Compiler Plugin -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.11.0</version>
+        <configuration>
+          <source>${java.version}</source>
+          <target>${java.version}</target>
+          <compilerArgs>
+            <arg>-parameters</arg>
+          </compilerArgs>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
 </project>

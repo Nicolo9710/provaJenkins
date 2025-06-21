@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context 
+    path="/myapp" 
+    reloadable="true"
+    crossContext="true">
+    
+    <!-- Configurazione specifica per Spring Boot + Tomcat 9 -->
+    <JarScanner>
+        <JarScanFilter
+            defaultPluggabilityScan="false"
+            defaultTldScan="false"
+            pluggabilityScan="*.jar"
+            tldScan="*.jar"/>
+    </JarScanner>
+    
+    <!-- Risorse aggiuntive se necessario -->
+    <Resources 
+        cachingAllowed="true" 
+        cacheMaxSize="100000" />
+</Context>
