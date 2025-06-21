@@ -1,20 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Context 
-    path="/myapp" 
-    reloadable="true"
-    crossContext="true">
-    
-    <!-- Configurazione specifica per Spring Boot + Tomcat 9 -->
+<Context>
+    <!-- Disabilita la scansione TLD per performance -->
     <JarScanner>
         <JarScanFilter
-            defaultPluggabilityScan="false"
             defaultTldScan="false"
-            pluggabilityScan="*.jar"
-            tldScan="*.jar"/>
+            tldScan="false"/>
     </JarScanner>
     
-    <!-- Risorse aggiuntive se necessario -->
-    <Resources 
-        cachingAllowed="true" 
-        cacheMaxSize="100000" />
+    <!-- Forza il caricamento delle librerie Spring -->
+    <Loader delegate="true"/>
 </Context>
