@@ -21,27 +21,23 @@ pipeline {
 
         stage('Build con Maven') {
             steps {
-                sh 'mvn clean install -f pom.xml'
+                bat 'mvn clean install -f pom.xml'
             }
         }
 
         stage('Deploy su Tomcat') {
-            steps {
-                script {
-                    def warFile = findFiles(glob: '**/*.war')[0].path
-                    def contextPath = WAR_NAME
+		    steps {
+		        script {
+		            def warFile = findFiles(glob: '**/*.war')[0].path
+		            def contextPath = WAR_NAME
+		
+		            echo "Deploying ${warFile} to ${TOMCAT_URL}/${contextPath}"
+		
+		            bat "curl -v --upload-file \"${warFile}\" --user \"${TOMCAT_USER}:${TOMCAT_PASS}\" \"${TOMCAT_URL}/manager/text/deploy?path=/${contextPath}&update=true\""
+		        }
+		    }
+		}
 
-                    echo "Deploying ${warFile} to ${TOMCAT_URL}/${contextPath}"
-
-                    // Deploy via Tomcat Manager
-                    sh """
-                        curl -v --upload-file "${warFile}" \\
-                        --user "${TOMCAT_USER}:${TOMCAT_PASS}" \\
-                        "${TOMCAT_URL}/manager/text/deploy?path=/${contextPath}&update=true"
-                    """
-                }
-            }
-        }
     }
 
     post {
