@@ -9,7 +9,7 @@ pipeline {
     }
 
     tools {
-        maven 'Maven 3.9.10'  // Nome esatto come configurato in "Gestione strumenti globali" di Jenkins
+        maven 'Maven'  // Nome esatto come configurato in "Gestione strumenti globali" di Jenkins
     }
 
     triggers {
