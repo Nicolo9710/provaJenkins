@@ -9,6 +9,7 @@ pipeline {
     }
 
     tools {
+		jdk 'jdk17'
         maven 'Maven'  // Nome esatto come configurato in "Gestione strumenti globali" di Jenkins
     }
 
