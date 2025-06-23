@@ -1,63 +1,13 @@
-def app // declared once globally for the pipeline
 pipeline {
-    agent any
-
-    environment {
-        DOCKERIMAGE = 'nicolo9710/provajenkins'
-        REGISTRY_CREDENTIALS = 'docker' // ID delle credenziali in Jenkins
-    }
-
-    triggers {
-        githubPush() // attiva la pipeline su push GitHub
-    }
-
-    stages {
-        stage('Clone repository') {
-            steps {
-				git branch: 'main', url: 'https://github.com/Nicolo9710/provaJenkins.git'
-                //checkout scm
-            }
-        }
-
-        stage('Build image') {
-            steps {
-                script {
-                    app = docker.build("${DOCKERIMAGE}")
-                }
-            }
-        }
-
-        stage('Test image') {
-            steps {
-                script {
-                    app.inside {
-                        bat 'echo "Tests passed"' // test 
-                    }
-                }
-            }
-        }
-
-        stage('Push image') {
-            steps {
-                script {
-                    docker.withRegistry('https://registry.hub.docker.com', "${REGISTRY_CREDENTIALS}") {
-                        app.push("${env.BUILD_NUMBER}")
-                        app.push("latest")
-                    }
-                }
-            }
-        }
-    }
-
-    post {
-        always {
-            echo 'Pipeline terminata.'
-        }
-        success {
-            echo 'Build e push riusciti con successo.'
-        }
-        failure {
-            echo 'Errore durante la pipeline.'
-        }
-    }
-}
+	environment {
+		registry = "nicolo9710/provajenkins"
+		registryCredential = 'docker'
+		dockerImage = ''}
+		agent anystages {
+			stage('Cloning our Git') {
+				steps {git 'https://github.com/Nicolo9710/provaJenkins.git'}}
+			stage('Building our image') {
+				steps{script {dockerImage = docker.build registry + ":$BUILD_NUMBER"}}}
+			stage('Deploy our image') {
+				steps{script {docker.withRegistry( '', registryCredential ) {dockerImage.push()}}}}
+			stage('Cleaning up') {steps{sh "docker rmi $registry:$BUILD_NUMBER"}}}}
