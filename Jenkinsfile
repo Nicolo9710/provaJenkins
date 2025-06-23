@@ -1,9 +1,13 @@
 pipeline {
+	agent any
+	
 	environment {
+		
 		registry = "nicolo9710/provajenkins"
 		registryCredential = 'docker'
 		dockerImage = ''}
-		agent anystages {
+		
+		stages {
 			stage('Cloning our Git') {
 				steps {git 'https://github.com/Nicolo9710/provaJenkins.git'}}
 			stage('Building our image') {
