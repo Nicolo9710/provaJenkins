@@ -14,4 +14,16 @@ pipeline {
 				steps{script {dockerImage = docker.build registry + ":$BUILD_NUMBER"}}}
 			stage('Deploy our image') {
 				steps{script {docker.withRegistry( '', registryCredential ) {dockerImage.push()}}}}
-			stage('Cleaning up') {steps{sh "docker rmi $registry:$BUILD_NUMBER"}}}}
+			}
+		post {
+        always {
+            echo 'Pipeline terminata.'
+        }
+        success {
+            echo 'Build e push riusciti con successo.'
+        }
+        failure {
+            echo 'Errore durante la pipeline.'
+        }
+    }	
+}
