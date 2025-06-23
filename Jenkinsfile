@@ -14,7 +14,8 @@ pipeline {
     stages {
         stage('Clone repository') {
             steps {
-                checkout scm
+				git branch: 'main', url: 'https://github.com/Nicolo9710/provaJenkins.git'
+                //checkout scm
             }
         }
 
