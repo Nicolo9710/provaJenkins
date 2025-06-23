@@ -1,3 +1,4 @@
+def app // declared once globally for the pipeline
 pipeline {
     agent any
 
@@ -20,7 +21,7 @@ pipeline {
         stage('Build image') {
             steps {
                 script {
-                    def app = docker.build("${DOCKERIMAGE}")
+                    app = docker.build("${DOCKERIMAGE}")
                 }
             }
         }
