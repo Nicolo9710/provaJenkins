@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = 'nicolo9710/provajenkins'
+        DOCKERIMAGE = 'nicolo9710/provajenkins'
         REGISTRY_CREDENTIALS = 'docker' // ID delle credenziali in Jenkins
     }
 
@@ -20,7 +20,7 @@ pipeline {
         stage('Build image') {
             steps {
                 script {
-                    def app = docker.build("${DOCKER_IMAGE}")
+                    def app = docker.build("${DOCKERIMAGE}")
                 }
             }
         }
