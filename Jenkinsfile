@@ -4,7 +4,8 @@ pipeline {
     triggers {
         githubPush() // attiva la pipeline con push su GitHub
     }
-    stage('Clone repository') {               
+    stages{
+		stage('Clone repository') {               
              
             checkout scm    
       }     
@@ -20,8 +21,10 @@ pipeline {
         } 
       stage('Push image') {
        docker.withRegistry('https://registry.hub.docker.com', 'docker') {            
-       app.push("${env.BUILD_NUMBER}")            
-       app.push("latest")        
+		       app.push("${env.BUILD_NUMBER}")            
+		       app.push("latest")        
               }    
           }
+	}
+    
 }    
