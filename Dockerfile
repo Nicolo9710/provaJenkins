@@ -2,6 +2,7 @@ FROM maven:3.9 AS builder
 WORKDIR /app
 COPY . .
 RUN mvn clean package -DskipTests
+RUN mvn install package
 
 FROM openjdk:17-jdk-slim
 WORKDIR /app
